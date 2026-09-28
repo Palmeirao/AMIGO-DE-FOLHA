@@ -1,21 +1,1497 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Amigo de Folha — O Guardião do Sono</title>
-    <meta name="description" content="Mascote virtual terapêutico infantil para rotina de sono e bem-estar, com ursinho de lavanda, cultivo botânico, gerenciador de tarefas e controle parental de tempo de tela." />
-    <meta property="og:title" content="Amigo de Folha — O Guardião do Sono" />
-    <meta property="og:description" content="Cultive. Sinta. Durma. Mascote virtual terapêutico com ursinho aromático, jardim de lavanda e rotina de sono saudável." />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
-  </head>
-  <body class="bg-[#181329] text-slate-800 antialiased selection:bg-purple-200">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Amigo de Folha — O Guardião do Sono</title>
+  <meta name="description" content="Mascote virtual terapêutico infantil para rotina de sono e bem-estar, com ursinho de lavanda, cultivo botânico, tarefas diárias e controle de tempo de tela.">
+  <meta property="og:title" content="Amigo de Folha — O Guardião do Sono">
+  <meta property="og:description" content="Cultive. Sinta. Durma. Mascote virtual terapêutico infantil para noites tranquilas e rotinas saudáveis.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-top: #f3e8ff;
+      --bg-mid: #faf5ff;
+      --bg-bottom: #ecfdf5;
+      --primary: #7c3aed;
+      --primary-hover: #6d28d9;
+      --accent-lavender: #c084fc;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --text-main: #1e1b4b;
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-border: rgba(192, 132, 252, 0.25);
+    }
 
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 50%, var(--bg-bottom) 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background 1.2s cubic-bezier(0.4, 0, 0.2, 1), color 1s ease;
+    }
+
+    body.night-mode {
+      --bg-top: #130f24;
+      --bg-mid: #1c1533;
+      --bg-bottom: #0f0c1d;
+      --text-main: #f3e8ff;
+      --card-bg: rgba(30, 24, 54, 0.85);
+      --card-border: rgba(147, 51, 234, 0.35);
+    }
+
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Fredoka', cursive, sans-serif;
+    }
+
+    /* TOP HEADER */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Fredoka', cursive;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #6b21a8;
+    }
+    body.night-mode .brand {
+      color: #d8b4fe;
+    }
+
+    .header-center {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 11px;
+      border-radius: 9999px;
+      background: #f5f3ff;
+      border: 1px solid #ddd6fe;
+      color: #6d28d9;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: default;
+    }
+    body.night-mode .badge {
+      background: #2e234e;
+      border-color: #581c87;
+      color: #e9d5ff;
+    }
+    .badge-amber {
+      background: #fffbeb;
+      border-color: #fde68a;
+      color: #b45309;
+    }
+    body.night-mode .badge-amber {
+      background: #3b2a1a;
+      border-color: #78350f;
+      color: #fde047;
+    }
+    .badge-clickable {
+      cursor: pointer;
+      transition: transform 0.15s, background-color 0.2s;
+    }
+    .badge-clickable:active {
+      transform: scale(0.95);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      cursor: pointer;
+      color: inherit;
+      transition: all 0.2s;
+    }
+    .btn-icon:hover {
+      background: rgba(192, 132, 252, 0.2);
+    }
+
+    .btn-parents {
+      background: #581c87;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      transition: all 0.2s;
+    }
+    .btn-parents:hover {
+      background: #4c1d95;
+      transform: translateY(-1px);
+    }
+
+    /* MAIN CONTAINER */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 480px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 12px 16px;
+      justify-content: space-between;
+    }
+
+    /* STATUS CARD */
+    .status-card {
+      width: 100%;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: 1px solid var(--card-border);
+      padding: 12px 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 15px rgba(124, 58, 237, 0.06);
+    }
+    .status-meter {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .status-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .status-val {
+      font-family: monospace;
+      font-size: 0.72rem;
+      color: #6b7280;
+    }
+    body.night-mode .status-val {
+      color: #c4b5fd;
+    }
+    .meter-track {
+      width: 100%;
+      height: 7px;
+      background: #e9d5ff;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+    body.night-mode .meter-track {
+      background: #2e234e;
+    }
+    .meter-fill {
+      height: 100%;
+      border-radius: 9999px;
+      transition: width 0.35s ease;
+    }
+    .fill-energy { background: linear-gradient(90deg, #818cf8, #4f46e5); }
+    .fill-happy { background: linear-gradient(90deg, #f472b6, #ec4899); }
+    .fill-calm { background: linear-gradient(90deg, #c084fc, #9333ea); }
+
+    /* PHASE NAVIGATION TABS */
+    .nav-tabs {
+      display: flex;
+      background: var(--card-bg);
+      padding: 4px;
+      border-radius: 18px;
+      border: 1px solid var(--card-border);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .tab-btn {
+      padding: 8px 18px;
+      border-radius: 14px;
+      border: none;
+      background: transparent;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: #581c87;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    body.night-mode .tab-btn {
+      color: #e9d5ff;
+    }
+    .tab-btn.active {
+      background: #7c3aed;
+      color: white;
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    }
+    .tab-btn.active-green {
+      background: #059669;
+      color: white;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+    }
+
+    /* MASCOT VISUAL & ANIMATIONS */
+    .mascot-stage {
+      width: 260px;
+      height: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      margin: 8px 0;
+      touch-action: manipulation;
+    }
+
+    @keyframes gentleFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(1deg); }
+    }
+    @keyframes breatheLoop {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+    @keyframes sleepZzz {
+      0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+      40% { opacity: 1; }
+      100% { transform: translate(25px, -45px) scale(1.3); opacity: 0; }
+    }
+    @keyframes popHeart {
+      0% { transform: translateY(0) scale(0.5); opacity: 1; }
+      100% { transform: translateY(-50px) scale(1.3); opacity: 0; }
+    }
+
+    .float-anim {
+      animation: gentleFloat 4s ease-in-out infinite;
+    }
+    .breathe-anim {
+      animation: breatheLoop 5s ease-in-out infinite;
+    }
+    .sleep-z-1 { animation: sleepZzz 2.6s ease-out infinite; }
+    .sleep-z-2 { animation: sleepZzz 2.6s ease-out 0.8s infinite; }
+    .sleep-z-3 { animation: sleepZzz 2.6s ease-out 1.6s infinite; }
+
+    .particle {
+      position: absolute;
+      pointer-events: none;
+      font-size: 1.5rem;
+      animation: popHeart 0.9s forwards ease-out;
+      z-index: 30;
+    }
+
+    .mood-bubble {
+      margin-top: 6px;
+      padding: 4px 14px;
+      border-radius: 9999px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      font-size: 0.72rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    /* ACTIONS GRID */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      width: 100%;
+      margin-top: 14px;
+    }
+
+    .action-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 10px 6px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #4c1d95;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.05);
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    body.night-mode .action-btn {
+      color: #e9d5ff;
+    }
+    .action-btn:active {
+      transform: scale(0.94);
+    }
+    .action-btn.btn-sleep {
+      background: #4f46e5;
+      color: white;
+      border-color: #4338ca;
+    }
+    .action-btn.btn-wake {
+      background: #f59e0b;
+      color: #78350f;
+      border-color: #d97706;
+    }
+    .action-btn.btn-tasks {
+      background: #7c3aed;
+      color: white;
+      border-color: #6d28d9;
+    }
+
+    /* MODALS */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 12, 29, 0.82);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+    .modal-card {
+      background: white;
+      width: 100%;
+      max-width: 420px;
+      border-radius: 24px;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+      overflow: hidden;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      animation: modalPop 0.25s ease-out;
+    }
+    @keyframes modalPop {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-header {
+      background: linear-gradient(135deg, #6d28d9, #4c1d95);
+      color: white;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-close {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-body {
+      padding: 18px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 14px;
+      border: 1px solid #e9d5ff;
+      border-radius: 16px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: white;
+    }
+    .task-item.done {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+      text-decoration: line-through;
+      color: #6b7280;
+    }
+
+    /* FULLSCREEN SLEEP LOCKOUT */
+    .sleep-lock {
+      position: fixed;
+      inset: 0;
+      background: #0d0a1a;
+      z-index: 99;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      color: #e9d5ff;
+      user-select: none;
+    }
+    .sleep-lock.active {
+      display: flex;
+    }
+
+    /* TOAST BANNER */
+    .toast {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(88, 28, 135, 0.95);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      z-index: 60;
+      display: none;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(192, 132, 252, 0.3);
+      max-width: 90vw;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      padding: 8px;
+      font-size: 0.72rem;
+      color: #6b21a8;
+      opacity: 0.75;
+    }
+    body.night-mode footer {
+      color: #c4b5fd;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Toast Message -->
+  <div id="toast" class="toast">Notificação</div>
+
+  <!-- TOP BAR -->
+  <header>
+    <div class="brand">
+      <span>🍃</span>
+      <span>Amigo de Folha</span>
+    </div>
+
+    <div class="header-center">
+      <!-- Coins / Folhinhas -->
+      <div class="badge badge-amber" title="Folhinhas mágicas (Moedas)">
+        <span>🍃</span>
+        <span id="folhasCount">50</span>
+      </div>
+
+      <!-- Sachet Inventory -->
+      <div id="badgeSachet" class="badge badge-clickable" onclick="useSachet()" title="Sachês de Lavanda disponíveis">
+        <span>🪻</span>
+        <span id="sachesCount">3</span>
+      </div>
+
+      <!-- Screen Time Timer (visible if enabled by parents) -->
+      <div id="screenTimeWidget" class="badge" style="display:none; font-family: monospace;">
+        <span>⏱️</span>
+        <span id="timerText">15:00</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Mute/Sound Toggle -->
+      <button id="btnSound" class="btn-icon" onclick="toggleMute()" title="Ativar/Desativar som">🔔</button>
+
+      <!-- Parents Area Button -->
+      <button class="btn-parents" onclick="openParentsModal()">
+        <span>🔒</span>
+        <span>Pais</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN VIEW -->
+  <main>
+    <!-- Status Dashboard -->
+    <div class="status-card">
+      <div class="status-meter">
+        <div class="status-label">
+          <span>🌙</span>
+          <span>Sono <b id="valEnergy" class="status-val">85%</b></span>
+        </div>
+        <div class="meter-track">
+          <div id="barEnergy" class="meter-fill fill-energy" style="width: 85%;"></div>
+        </div>
+      </div>
+
+      <div class="status-meter">
+        <div class="status-label">
+          <span>💖</span>
+          <span>Felicidade <b id="valHappy" class="status-val">90%</b></span>
+        </div>
+        <div class="meter-track">
+          <div id="barHappy" class="meter-fill fill-happy" style="width: 90%;"></div>
+        </div>
+      </div>
+
+      <div class="status-meter">
+        <div class="status-label">
+          <span>🪻</span>
+          <span>Calma/Aroma <b id="valCalm" class="status-val">80%</b></span>
+        </div>
+        <div class="meter-track">
+          <div id="barCalm" class="meter-fill fill-calm" style="width: 80%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase Selector Tabs -->
+    <div class="nav-tabs">
+      <button id="tabTeddy" class="tab-btn active" onclick="switchTab('teddy')">
+        <span>🧸</span>
+        <span>O Ursinho</span>
+      </button>
+      <button id="tabGarden" class="tab-btn" onclick="switchTab('garden')">
+        <span>🪻</span>
+        <span>Jardim de Lavanda</span>
+        <span id="lockGardenIcon" style="font-size:0.65rem;">🔒 Nvl 2</span>
+      </button>
+    </div>
+
+    <!-- STAGE 1: TEDDY MASCOT -->
+    <div id="stageTeddy" class="mascot-stage float-anim" onclick="petTeddy(event)">
+      <!-- Zzz floating sleep animations -->
+      <div id="zzzContainer" style="display:none; position:absolute; top: -10px; right: 20px; pointer-events:none;">
+        <span class="sleep-z-1" style="display:block; font-weight:bold; color:#a5b4fc; font-size:1.1rem;">z</span>
+        <span class="sleep-z-2" style="display:block; font-weight:bold; color:#c084fc; font-size:1.4rem;">Z</span>
+        <span class="sleep-z-3" style="display:block; font-weight:bold; color:#e0e7ff; font-size:1.8rem;">Z</span>
+      </div>
+
+      <!-- Mascot SVG -->
+      <svg viewBox="0 0 240 240" style="width:100%; height:100%; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.12));">
+        <defs>
+          <radialGradient id="tBody" cx="45%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#edd8b7" />
+            <stop offset="60%" stop-color="#dfbe91" />
+            <stop offset="100%" stop-color="#cca16e" />
+          </radialGradient>
+          <radialGradient id="tInner" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fdf3e7" />
+            <stop offset="100%" stop-color="#f5ddc3" />
+          </radialGradient>
+          <linearGradient id="pocketGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#e9d5ff" />
+            <stop offset="100%" stop-color="#c084fc" />
+          </linearGradient>
+          <linearGradient id="blanketGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#a7f3d0" />
+            <stop offset="100%" stop-color="#6ee7b7" />
+          </linearGradient>
+        </defs>
+
+        <!-- Ears -->
+        <g id="leftEar">
+          <circle cx="62" cy="62" r="28" fill="url(#tBody)" stroke="#9a7143" stroke-width="2.5" />
+          <circle cx="62" cy="62" r="16" fill="url(#tInner)" />
+          <path d="M 46 45 Q 60 38 64 52 Q 52 56 46 45 Z" fill="#86efac" opacity="0.85" />
+        </g>
+        <g id="rightEar">
+          <circle cx="178" cy="62" r="28" fill="url(#tBody)" stroke="#9a7143" stroke-width="2.5" />
+          <circle cx="178" cy="62" r="16" fill="url(#tInner)" />
+          <circle cx="186" cy="48" r="5" fill="#c084fc" />
+          <circle cx="192" cy="53" r="4.5" fill="#d8b4fe" />
+        </g>
+
+        <!-- Body -->
+        <ellipse cx="120" cy="165" rx="64" ry="60" fill="url(#tBody)" stroke="#9a7143" stroke-width="2.5" />
+        <!-- Paws Bottom -->
+        <ellipse cx="78" cy="216" rx="18" ry="12" fill="url(#tBody)" stroke="#9a7143" stroke-width="2" />
+        <ellipse cx="162" cy="216" rx="18" ry="12" fill="url(#tBody)" stroke="#9a7143" stroke-width="2" />
+
+        <!-- Lavender Aroma Belly Pouch -->
+        <g id="aromaPouch" onclick="event.stopPropagation(); useSachet();" style="cursor: pointer;">
+          <ellipse cx="120" cy="168" rx="42" ry="40" fill="url(#tInner)" />
+          <path d="M 96 156 Q 120 162 144 156 L 142 188 Q 120 200 98 188 Z" fill="url(#pocketGrad)" stroke="#7e22ce" stroke-width="2" stroke-dasharray="4 2" />
+          <path d="M 120 162 L 120 184" stroke="#7e22ce" stroke-width="2" stroke-linecap="round" />
+          <circle cx="116" cy="168" r="3" fill="#a855f7" />
+          <circle cx="124" cy="170" r="3" fill="#c084fc" />
+          <text x="120" y="196" text-anchor="middle" font-size="9" fill="#581c87" font-weight="bold" font-family="Quicksand, sans-serif">🪻 SACHÊ</text>
+        </g>
+
+        <!-- Arms -->
+        <ellipse cx="58" cy="155" rx="15" ry="22" transform="rotate(20 58 155)" fill="url(#tBody)" stroke="#9a7143" stroke-width="2" />
+        <ellipse cx="182" cy="155" rx="15" ry="22" transform="rotate(-20 182 155)" fill="url(#tBody)" stroke="#9a7143" stroke-width="2" />
+
+        <!-- Head -->
+        <circle cx="120" cy="105" r="52" fill="url(#tBody)" stroke="#9a7143" stroke-width="2.5" />
+        <!-- Cheeks -->
+        <ellipse cx="88" cy="116" rx="8" ry="5" fill="#fca5a5" opacity="0.65" />
+        <ellipse cx="152" cy="116" rx="8" ry="5" fill="#fca5a5" opacity="0.65" />
+        <!-- Snout -->
+        <ellipse cx="120" cy="118" rx="20" ry="15" fill="url(#tInner)" />
+        <path d="M 115 111 Q 120 108 125 111 Q 120 118 115 111 Z" fill="#573619" />
+
+        <!-- Eyes Group -->
+        <g id="eyesAwake">
+          <circle cx="98" cy="100" r="7.5" fill="#3b2413" />
+          <circle cx="96" cy="98" r="2.8" fill="#ffffff" />
+          <circle cx="142" cy="100" r="7.5" fill="#3b2413" />
+          <circle cx="140" cy="98" r="2.8" fill="#ffffff" />
+        </g>
+        <g id="eyesSleep" style="display:none;" stroke="#573619" stroke-width="2.5" stroke-linecap="round" fill="none">
+          <path d="M 90 102 Q 98 108 106 102" />
+          <path d="M 134 102 Q 142 108 150 102" />
+        </g>
+
+        <!-- Mouth -->
+        <path id="mouthNormal" d="M 115 122 Q 120 128 125 122" stroke="#573619" stroke-width="2" fill="none" stroke-linecap="round" />
+
+        <!-- Sleep Blanket & Nightcap -->
+        <g id="sleepGear" style="display:none;">
+          <path d="M 85 70 Q 120 40 160 62 Q 170 30 185 36 Q 165 20 120 28 Q 80 42 85 70 Z" fill="#6366f1" />
+          <circle cx="188" cy="38" r="7" fill="#fde047" stroke="#ca8a04" stroke-width="1" />
+          <path d="M 50 178 Q 120 165 190 178 L 194 225 Q 120 236 46 225 Z" fill="url(#blanketGrad)" stroke="#059669" stroke-width="2" />
+        </g>
+      </svg>
+
+      <!-- Mascot Mood Banner -->
+      <div id="moodBubble" class="mood-bubble">
+        <span>✨</span>
+        <span id="moodText">Toque para fazer carinho!</span>
+      </div>
+    </div>
+
+    <!-- STAGE 2: LAVENDER GARDEN -->
+    <div id="stageGarden" style="display:none; width: 100%; text-align: center;">
+      <div id="gardenLockedMsg" style="padding: 24px; background: var(--card-bg); border-radius: 24px; border: 1px solid var(--card-border);">
+        <span style="font-size: 3rem;">🌱🔒</span>
+        <h3 style="margin: 8px 0; font-family: 'Fredoka', cursive;">Jardim Bloqueado</h3>
+        <p style="font-size: 0.82rem; color: #6b7280; line-height: 1.5;">
+          Cuide bem do seu Ursinho e alcance o <b>Nível 2</b> para desbloquear o vasinho e cultivar suas flores de lavanda aromáticas!
+        </p>
+      </div>
+
+      <div id="gardenActiveView" style="display:none; flex-direction:column; align-items:center;">
+        <svg viewBox="0 0 200 200" style="width:200px; height:200px; margin: 0 auto; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.1));">
+          <linearGradient id="pGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#fed7aa" />
+            <stop offset="50%" stop-color="#fba94b" />
+            <stop offset="100%" stop-color="#ea580c" />
+          </linearGradient>
+
+          <!-- Stage 1: Sprout -->
+          <g id="sproutStage">
+            <path d="M 100 135 Q 98 120 100 105" stroke="#22c55e" stroke-width="3.5" stroke-linecap="round" fill="none" />
+            <path d="M 100 120 Q 88 116 92 108 Q 100 112 100 120 Z" fill="#4ade80" />
+            <path d="M 100 112 Q 112 108 108 100 Q 100 105 100 112 Z" fill="#22c55e" />
+          </g>
+
+          <!-- Stage 2: Growing Bush -->
+          <g id="growthStage" style="display:none;">
+            <path d="M 100 135 L 100 80" stroke="#16a34a" stroke-width="3.5" />
+            <path d="M 100 115 Q 85 105 82 85" stroke="#16a34a" stroke-width="3" />
+            <path d="M 100 110 Q 115 100 118 82" stroke="#16a34a" stroke-width="3" />
+            <circle cx="100" cy="76" r="4.5" fill="#c084fc" />
+            <circle cx="82" cy="82" r="4" fill="#c084fc" />
+            <circle cx="118" cy="80" r="4" fill="#c084fc" />
+          </g>
+
+          <!-- Stage 3: Bloomed Lavender -->
+          <g id="flowerStage" style="display:none;">
+            <path d="M 100 135 L 100 50" stroke="#15803d" stroke-width="3.5" />
+            <path d="M 100 130 Q 82 100 76 65" stroke="#16a34a" stroke-width="3" />
+            <path d="M 100 130 Q 118 100 124 65" stroke="#16a34a" stroke-width="3" />
+            <!-- Central Spike -->
+            <circle cx="100" cy="46" r="5.5" fill="#a855f7" />
+            <circle cx="95" cy="40" r="5" fill="#c084fc" />
+            <circle cx="105" cy="40" r="5" fill="#c084fc" />
+            <circle cx="100" cy="32" r="4.5" fill="#d8b4fe" />
+            <circle cx="100" cy="24" r="4" fill="#f3e8ff" />
+            <!-- Left Spike -->
+            <circle cx="76" cy="62" r="4.5" fill="#a855f7" />
+            <circle cx="74" cy="54" r="4" fill="#c084fc" />
+            <!-- Right Spike -->
+            <circle cx="124" cy="62" r="4.5" fill="#a855f7" />
+            <circle cx="126" cy="54" r="4" fill="#c084fc" />
+          </g>
+
+          <!-- Soil & Clay Pot -->
+          <ellipse cx="100" cy="135" rx="46" ry="12" fill="#582f0e" />
+          <path d="M 56 132 Q 100 138 144 132 L 132 180 Q 100 186 68 180 Z" fill="url(#pGrad)" stroke="#c2410c" stroke-width="1.8" />
+          <circle cx="100" cy="158" r="11" fill="#fff7ed" />
+          <text x="100" y="162" text-anchor="middle" font-size="10">🪻</text>
+        </svg>
+
+        <!-- Garden Progress & Controls -->
+        <div style="width: 100%; max-width: 280px; margin-top: 8px;">
+          <div style="display:flex; justify-content:space-between; font-size: 0.72rem; font-weight:700; margin-bottom: 4px;">
+            <span>Evolução da Planta</span>
+            <span id="plantStatusText" style="color:#7c3aed;">Broto 🌱</span>
+          </div>
+          <div class="meter-track" style="height: 9px;">
+            <div id="plantProgressBar" class="meter-fill" style="width: 15%; background: linear-gradient(90deg, #10b981, #a855f7);"></div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; justify-content: center; margin-top: 12px; width: 100%; max-width: 300px;">
+          <button class="action-btn" style="flex:1;" onclick="waterPlant()">
+            <span style="font-size: 1.2rem;">🚿</span><span>Regar</span>
+          </button>
+          <button class="action-btn" style="flex:1;" onclick="giveSun()">
+            <span style="font-size: 1.2rem;">☀️</span><span>Dar Sol</span>
+          </button>
+          <button id="btnHarvest" class="action-btn" style="flex:1.2; background: #7c3aed; color: white; display: none;" onclick="harvestLavender()">
+            <span style="font-size: 1.2rem;">🪻</span><span>Colher Flores!</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHILD QUICK ACTION BUTTONS -->
+    <div id="actionsTeddy" class="actions-grid">
+      <button class="action-btn" onclick="petTeddy(event)">
+        <span style="font-size: 1.2rem;">💖</span>
+        <span>Carinho</span>
+      </button>
+
+      <button class="action-btn" onclick="useSachet()">
+        <span style="font-size: 1.2rem;">🪻</span>
+        <span>Usar Sachê</span>
+      </button>
+
+      <button id="btnSleepToggle" class="action-btn btn-sleep" onclick="toggleSleep()">
+        <span id="sleepIcon" style="font-size: 1.2rem;">🌙</span>
+        <span id="sleepText">Nanar</span>
+      </button>
+
+      <button class="action-btn" onclick="openBreathingModal()">
+        <span style="font-size: 1.2rem;">🍃</span>
+        <span>Respiração</span>
+      </button>
+
+      <button class="action-btn" onclick="openStoriesModal()">
+        <span style="font-size: 1.2rem;">📖</span>
+        <span>Historinha</span>
+      </button>
+
+      <button class="action-btn btn-tasks" onclick="openTasksModal()">
+        <span style="font-size: 1.2rem;">📋</span>
+        <span>Tarefas</span>
+      </button>
+    </div>
+  </main>
+
+  <footer>
+    <p>Amigo de Folha: Cultive. Sinta. Durma. 🌿💜</p>
+  </footer>
+
+  <!-- MODAL: MINHAS TAREFAS -->
+  <div id="tasksModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="font-heading">📋 Minhas Tarefas do Soninho</h3>
+        <button class="modal-close" onclick="closeModal('tasksModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:0.75rem; color:#6b7280; margin-bottom: 12px;">Cumpra as tarefas do dia a dia para ganhar Folhinhas 🍃 e cuidar do Ursinho:</p>
+        <div id="tasksContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: RESPIRAÇÃO DA FOLHINHA -->
+  <div id="breathingModal" class="modal-overlay">
+    <div class="modal-card" style="background: #1e1b4b; color: white; text-align: center;">
+      <div class="modal-header" style="background: #312e81;">
+        <h3 class="font-heading">🍃 Respiração da Folhinha</h3>
+        <button class="modal-close" onclick="closeModal('breathingModal')">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 24px;">
+        <p id="breathStep" style="font-size: 1.15rem; font-weight: bold; color: #c084fc; margin-bottom: 8px;">Cheire a Florzinha...</p>
+        <div id="breathCircle" style="width: 130px; height: 130px; border-radius: 50%; background: radial-gradient(circle, #a855f7, #6d28d9); margin: 20px auto; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; transition: transform 4s ease-in-out; box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);">
+          🌸
+        </div>
+        <p style="font-size: 0.8rem; color: #c7d2fe; line-height: 1.5;">
+          Inspire o aroma suave da lavanda, segure a tranquilidade e solte o ar devagarzinho pela boquinha.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: HISTORINHAS DE NINAR -->
+  <div id="storiesModal" class="modal-overlay">
+    <div class="modal-card" style="background: #181329; color: #e0e7ff;">
+      <div class="modal-header" style="background: #2e1065;">
+        <h3 class="font-heading">📖 Historinha de Ninar</h3>
+        <button class="modal-close" onclick="closeModal('storiesModal')">✕</button>
+      </div>
+      <div class="modal-body" style="line-height: 1.6; font-size: 0.88rem;">
+        <h4 style="color:#fde047; margin-bottom: 8px; font-family:'Fredoka', cursive;">A Folhinha que Aprendeu a Sonhar 🍃</h4>
+        <p style="margin-bottom: 10px;">
+          No alto de um grande carvalho perfumado vivia uma pequena folhinha verde. Quando a lua redonda surgiu no céu iluminando a floresta, a coruja sábia pousou ao lado e sussurrou:
+        </p>
+        <p style="margin-bottom: 10px; font-style: italic; color: #c4b5fd;">
+          "Respire fundo, sinta o aroma doce de lavanda e feche os olhinhos com serenidade."
+        </p>
+        <p>
+          A folhinha se enrolou quentinha em sua cama de brisa suave e dormiu protegida pelas estrelas. Boa noite, amiguinho!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ÁREA DOS PAIS (COM PROTEÇÃO POR PIN) -->
+  <div id="parentsModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="font-heading">🔒 Área dos Pais & Responsáveis</h3>
+        <button class="modal-close" onclick="closeModal('parentsModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <!-- PIN Verification Step -->
+        <div id="pinGate">
+          <p style="font-size: 0.82rem; margin-bottom: 10px; color:#4b5563;">Digite o PIN de segurança de 4 dígitos (padrão inicial: <b>1234</b>):</p>
+          <div style="display:flex; gap: 8px; justify-content: center; margin-bottom: 12px;">
+            <input id="inputPin" type="password" maxlength="4" style="width: 120px; font-size: 1.4rem; text-align: center; border: 2px solid #c084fc; border-radius: 12px; padding: 6px; letter-spacing: 6px;" placeholder="••••">
+            <button class="btn-parents" onclick="verifyPin()">Entrar</button>
+          </div>
+          <p style="text-align: center; font-size: 0.75rem; color: #9ca3af;">Esqueceu o PIN? A senha padrão é <b>1234</b>.</p>
+        </div>
+
+        <!-- Authenticated Parents Dashboard -->
+        <div id="parentsDashboard" style="display:none;">
+          <h4 style="margin-bottom: 6px; font-size: 0.82rem; color:#4c1d95;">⏱️ Controle de Tempo de Tela:</h4>
+          <p style="font-size: 0.72rem; color: #6b7280; margin-bottom: 8px;">Quando o tempo expirar, a tela de sono bloqueará o jogo:</p>
+          <div style="display:flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;">
+            <button class="badge badge-clickable" onclick="setLimit(30)">30s (teste)</button>
+            <button class="badge badge-clickable" onclick="setLimit(15 * 60)">15 min</button>
+            <button class="badge badge-clickable" onclick="setLimit(30 * 60)">30 min</button>
+            <button class="badge badge-clickable" onclick="setLimit(45 * 60)">45 min</button>
+            <button class="badge badge-clickable" onclick="setLimit(0)">Desativar</button>
+          </div>
+
+          <button class="action-btn" style="background:#ef4444; color:white; width:100%; margin-bottom:14px; padding: 10px;" onclick="lockScreenNow()">
+            🌙 Bloquear Tela Agora Para o Sono
+          </button>
+
+          <hr style="margin: 12px 0; border: none; border-top: 1px solid #e5e7eb;">
+
+          <h4 style="margin-bottom: 6px; font-size: 0.82rem; color:#4c1d95;">Adicionar Nova Tarefa à Rotina:</h4>
+          <div style="display:flex; gap: 6px; margin-bottom: 12px;">
+            <input id="newTodoInput" type="text" placeholder="Ex.: Guardar sapatos" style="flex:1; border: 1px solid #ddd; border-radius: 10px; padding: 8px; font-size: 0.8rem;">
+            <button class="btn-parents" onclick="addNewParentTask()">+ Adicionar</button>
+          </div>
+
+          <hr style="margin: 12px 0; border: none; border-top: 1px solid #e5e7eb;">
+
+          <h4 style="margin-bottom: 6px; font-size: 0.82rem; color:#4c1d95;">Alterar PIN de Segurança:</h4>
+          <div style="display:flex; gap: 6px;">
+            <input id="newPinInput" type="password" maxlength="4" placeholder="Novo PIN" style="width: 100px; border: 1px solid #ddd; border-radius: 10px; padding: 6px; text-align:center; font-size: 0.8rem;">
+            <button class="btn-parents" onclick="changePin()">Salvar PIN</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULLSCREEN SLEEP LOCKOUT SCREEN -->
+  <div id="sleepLockScreen" class="sleep-lock">
+    <span style="font-size: 4.5rem; margin-bottom: 14px;" class="breathe-anim">🌙💤</span>
+    <h1 style="font-family: 'Fredoka', cursive; font-size: 1.9rem; margin-bottom: 8px; color: #f3e8ff;">Hora de Descansar!</h1>
+    <p style="font-size: 1rem; color: #c4b5fd; max-width: 320px; line-height: 1.6; margin-bottom: 24px;">
+      "O Amigo de Folha também precisa descansar! Hora de desligar a tela, fechar os olhinhos e dormir bem."
+    </p>
+    <button style="background: transparent; color: #a78bfa; border: 1px solid #581c87; padding: 8px 18px; border-radius: 9999px; font-size: 0.75rem; cursor:pointer;" onclick="unlockFromSleep()">
+      Desbloquear (Área dos Pais)
+    </button>
+  </div>
+
+  <script>
+    // ==========================================
+    // 1. GAME STATE & LOCALSTORAGE PERSISTENCE
+    // ==========================================
+    const SAVE_KEY = 'amigo_de_folha_save_data';
+
+    let stats = { energy: 85, happy: 90, calm: 80 };
+    let inventory = { folhas: 50, saches: 3, xp: 0, level: 1 };
+    let plant = { unlocked: false, moisture: 60, sun: 60, progress: 15 };
+    let isSleeping = false;
+    let isMuted = false;
+    let screenTime = { limit: 0, remaining: 0, active: false };
+    let parentPin = '1234';
+
+    let tasks = [
+      { id: 1, text: 'Escovar os dentinhos 🦷', done: false, reward: 15 },
+      { id: 2, text: 'Guardar os brinquedos 🧸', done: false, reward: 20 },
+      { id: 3, text: 'Colocar o pijama quentinho 👕', done: false, reward: 10 },
+      { id: 4, text: 'Tomar banho morno relaxante 🛁', done: false, reward: 25 },
+      { id: 5, text: 'Ouvir historinha com a família 📖', done: false, reward: 15 }
+    ];
+
+    // Load from localStorage if present
+    function loadSavedGame() {
+      try {
+        const raw = localStorage.getItem(SAVE_KEY);
+        if (raw) {
+          const data = JSON.parse(raw);
+          if (data.stats) stats = data.stats;
+          if (data.inventory) inventory = data.inventory;
+          if (data.plant) plant = data.plant;
+          if (data.parentPin) parentPin = data.parentPin;
+          if (data.tasks) tasks = data.tasks;
+        }
+      } catch (e) {
+        console.warn('Erro ao carregar dados salvos:', e);
+      }
+    }
+
+    function saveGame() {
+      try {
+        const data = { stats, inventory, plant, parentPin, tasks };
+        localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+      } catch (e) {
+        // Fallback
+      }
+    }
+
+    // ==========================================
+    // 2. SYNTHESIZED WEB AUDIO ENGINE
+    // ==========================================
+    let audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playTone(freq, dur = 0.3, vol = 0.1, type = 'sine') {
+      if (isMuted) return;
+      initAudio();
+      if (!audioCtx) return;
+      try {
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+        gain.gain.setValueAtTime(vol, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + dur);
+      } catch (e) {}
+    }
+
+    function playPurrGiggle() {
+      if (isMuted) return;
+      playTone(440, 0.18, 0.1, 'triangle');
+      setTimeout(() => playTone(554, 0.22, 0.1, 'triangle'), 80);
+    }
+
+    function playSparkle() {
+      if (isMuted) return;
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+        setTimeout(() => playTone(f, 0.4, 0.08), i * 75);
+      });
+    }
+
+    function playWaterDrop() {
+      if (isMuted) return;
+      playTone(700, 0.15, 0.12, 'sine');
+    }
+
+    function toggleMute() {
+      isMuted = !isMuted;
+      document.getElementById('btnSound').innerText = isMuted ? '🔇' : '🔔';
+      showToast(isMuted ? 'Sons desativados' : 'Sons ativados');
+    }
+
+    // ==========================================
+    // 3. UI RENDERING & FEEDBACK
+    // ==========================================
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.style.display = 'block';
+      clearTimeout(window._toastTimeout);
+      window._toastTimeout = setTimeout(() => {
+        t.style.display = 'none';
+      }, 2400);
+    }
+
+    function updateUI() {
+      // Status meters
+      document.getElementById('valEnergy').innerText = Math.round(stats.energy) + '%';
+      document.getElementById('valHappy').innerText = Math.round(stats.happy) + '%';
+      document.getElementById('valCalm').innerText = Math.round(stats.calm) + '%';
+
+      document.getElementById('barEnergy').style.width = stats.energy + '%';
+      document.getElementById('barHappy').style.width = stats.happy + '%';
+      document.getElementById('barCalm').style.width = stats.calm + '%';
+
+      // Inventories
+      document.getElementById('folhasCount').innerText = inventory.folhas;
+      document.getElementById('sachesCount').innerText = inventory.saches;
+
+      // Unlock Lavender at Level 2
+      if (inventory.level >= 2) {
+        document.getElementById('lockGardenIcon').style.display = 'none';
+        document.getElementById('gardenLockedMsg').style.display = 'none';
+        document.getElementById('gardenActiveView').style.display = 'flex';
+      }
+
+      // Plant stages
+      document.getElementById('plantProgressBar').style.width = plant.progress + '%';
+      const sprout = document.getElementById('sproutStage');
+      const growth = document.getElementById('growthStage');
+      const flower = document.getElementById('flowerStage');
+      const btnHarvest = document.getElementById('btnHarvest');
+      const plantText = document.getElementById('plantStatusText');
+
+      if (plant.progress < 45) {
+        sprout.style.display = 'block';
+        growth.style.display = 'none';
+        flower.style.display = 'none';
+        btnHarvest.style.display = 'none';
+        plantText.innerText = 'Broto 🌱';
+      } else if (plant.progress < 90) {
+        sprout.style.display = 'none';
+        growth.style.display = 'block';
+        flower.style.display = 'none';
+        btnHarvest.style.display = 'none';
+        plantText.innerText = 'Crescendo 🌿';
+      } else {
+        sprout.style.display = 'none';
+        growth.style.display = 'none';
+        flower.style.display = 'block';
+        btnHarvest.style.display = 'flex';
+        plantText.innerText = 'Lavanda Florida! 🪻';
+      }
+
+      // Screen time display
+      const stWidget = document.getElementById('screenTimeWidget');
+      if (screenTime.active && screenTime.remaining > 0) {
+        stWidget.style.display = 'inline-flex';
+        const m = Math.floor(screenTime.remaining / 60);
+        const s = screenTime.remaining % 60;
+        document.getElementById('timerText').innerText = m + ':' + (s < 10 ? '0' : '') + s;
+      } else {
+        stWidget.style.display = 'none';
+      }
+
+      saveGame();
+    }
+
+    // ==========================================
+    // 4. MASCOT INTERACTIONS
+    // ==========================================
+    function petTeddy(e) {
+      stats.happy = Math.min(100, stats.happy + 8);
+      stats.calm = Math.min(100, stats.calm + 3);
+      inventory.xp += 5;
+
+      playPurrGiggle();
+      spawnParticle(e);
+      checkLevelUp();
+      updateUI();
+      document.getElementById('moodText').innerText = 'Adorando seu carinho quentinho! ❤️';
+    }
+
+    function spawnParticle(e) {
+      const container = document.getElementById('stageTeddy');
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const symbols = ['💖', '✨', '🌸', '💜'];
+      p.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+
+      const rect = container.getBoundingClientRect();
+      const x = e ? (e.clientX - rect.left) : (rect.width / 2);
+      const y = e ? (e.clientY - rect.top) : (rect.height / 2);
+
+      p.style.left = (x - 10) + 'px';
+      p.style.top = (y - 20) + 'px';
+      container.appendChild(p);
+
+      setTimeout(() => p.remove(), 900);
+    }
+
+    function useSachet() {
+      if (inventory.saches > 0) {
+        inventory.saches--;
+        stats.calm = 100;
+        inventory.xp += 15;
+        playSparkle();
+        showToast('🪻 Sachê no bolsinho! O aroma de lavanda acalma o Ursinho.');
+        document.getElementById('moodText').innerText = 'Respirando aroma calmante de lavanda 🪻';
+        checkLevelUp();
+        updateUI();
+      } else {
+        showToast('Você precisa de mais sachês! Cultive lavandas no Jardim.');
+      }
+    }
+
+    function toggleSleep() {
+      isSleeping = !isSleeping;
+      document.body.classList.toggle('night-mode', isSleeping);
+
+      const stage = document.getElementById('stageTeddy');
+      const eyesAwake = document.getElementById('eyesAwake');
+      const eyesSleep = document.getElementById('eyesSleep');
+      const sleepGear = document.getElementById('sleepGear');
+      const zzz = document.getElementById('zzzContainer');
+      const btn = document.getElementById('btnSleepToggle');
+
+      if (isSleeping) {
+        stage.classList.remove('float-anim');
+        stage.classList.add('breathe-anim');
+        eyesAwake.style.display = 'none';
+        eyesSleep.style.display = 'block';
+        sleepGear.style.display = 'block';
+        zzz.style.display = 'block';
+
+        btn.classList.remove('btn-sleep');
+        btn.classList.add('btn-wake');
+        document.getElementById('sleepText').innerText = 'Acordar';
+        document.getElementById('sleepIcon').innerText = '☀️';
+        document.getElementById('moodText').innerText = 'Dormindo serenamente... nanando bem 🌙';
+
+        playTone(392, 0.4);
+        showToast('🌙 Boa noite! O Ursinho está dormindo e recarregando energias.');
+      } else {
+        stage.classList.remove('breathe-anim');
+        stage.classList.add('float-anim');
+        eyesAwake.style.display = 'block';
+        eyesSleep.style.display = 'none';
+        sleepGear.style.display = 'none';
+        zzz.style.display = 'none';
+
+        btn.classList.remove('btn-wake');
+        btn.classList.add('btn-sleep');
+        document.getElementById('sleepText').innerText = 'Nanar';
+        document.getElementById('sleepIcon').innerText = '🌙';
+        document.getElementById('moodText').innerText = 'Acordou feliz e descansado! ☀️';
+
+        playTone(523, 0.4);
+        showToast('☀️ Bom dia! O Ursinho acordou revigorado.');
+      }
+      updateUI();
+    }
+
+    function switchTab(tab) {
+      const tabT = document.getElementById('tabTeddy');
+      const tabG = document.getElementById('tabGarden');
+      const stageT = document.getElementById('stageTeddy');
+      const stageG = document.getElementById('stageGarden');
+      const actsT = document.getElementById('actionsTeddy');
+
+      if (tab === 'teddy') {
+        tabT.classList.add('active');
+        tabG.classList.remove('active-green');
+        stageT.style.display = 'flex';
+        actsT.style.display = 'grid';
+        stageG.style.display = 'none';
+      } else {
+        tabT.classList.remove('active');
+        tabG.classList.add('active-green');
+        stageT.style.display = 'none';
+        actsT.style.display = 'none';
+        stageG.style.display = 'block';
+      }
+    }
+
+    // ==========================================
+    // 5. GARDEN & LAVENDER ACTIONS
+    // ==========================================
+    function waterPlant() {
+      plant.moisture = Math.min(100, plant.moisture + 25);
+      plant.progress = Math.min(100, plant.progress + 14);
+      inventory.xp += 10;
+      playWaterDrop();
+      showToast('💧 Lavanda regada com água fresca!');
+      checkLevelUp();
+      updateUI();
+    }
+
+    function giveSun() {
+      plant.sun = Math.min(100, plant.sun + 20);
+      plant.progress = Math.min(100, plant.progress + 8);
+      inventory.xp += 5;
+      playTone(587, 0.25);
+      showToast('☀️ Solzinho suave aquecendo a plantinha!');
+      checkLevelUp();
+      updateUI();
+    }
+
+    function harvestLavender() {
+      inventory.saches += 2;
+      inventory.folhas += 40;
+      inventory.xp += 40;
+      plant.progress = 10;
+      playSparkle();
+      showToast('🎉 Flores colhidas! Você ganhou +2 Sachês e +40 Folhinhas!');
+      checkLevelUp();
+      updateUI();
+    }
+
+    function checkLevelUp() {
+      const targetXP = inventory.level * 60;
+      if (inventory.xp >= targetXP) {
+        inventory.level++;
+        inventory.folhas += 25;
+        playSparkle();
+        showToast('🌟 Parabéns! Você subiu para o Nível ' + inventory.level + '!');
+      }
+    }
+
+    // ==========================================
+    // 6. ROUTINE TASKS MANAGEMENT
+    // ==========================================
+    function openTasksModal() {
+      renderTasks();
+      document.getElementById('tasksModal').classList.add('open');
+    }
+
+    function renderTasks() {
+      const container = document.getElementById('tasksContainer');
+      container.innerHTML = tasks.map(t => `
+        <div class="task-item ${t.done ? 'done' : ''}" onclick="toggleTask(${t.id})">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1.1rem;">${t.done ? '✅' : '⚪'}</span>
+            <span style="font-weight:700; font-size:0.85rem;">${t.text}</span>
+          </div>
+          <span style="font-weight:bold; font-size:0.75rem; color:#7c3aed;">+${t.reward} 🍃</span>
+        </div>
+      `).join('');
+    }
+
+    function toggleTask(id) {
+      const t = tasks.find(x => x.id === id);
+      if (t) {
+        t.done = !t.done;
+        if (t.done) {
+          inventory.folhas += t.reward;
+          inventory.xp += 20;
+          playSparkle();
+          showToast(`⭐ Parabéns! +${t.reward} Folhinhas e +20 XP!`);
+          checkLevelUp();
+        } else {
+          inventory.folhas = Math.max(0, inventory.folhas - t.reward);
+        }
+        renderTasks();
+        updateUI();
+      }
+    }
+
+    // ==========================================
+    // 7. CALMING BREATHING & BEDTIME STORIES
+    // ==========================================
+    let breathInterval = null;
+    function openBreathingModal() {
+      document.getElementById('breathingModal').classList.add('open');
+      const step = document.getElementById('breathStep');
+      const circle = document.getElementById('breathCircle');
+
+      let phase = 0;
+      function cycle() {
+        if (phase === 0) {
+          step.innerText = 'Cheire a Florzinha... (Inspire)';
+          circle.innerText = '🌸';
+          circle.style.transform = 'scale(1.25)';
+          playTone(440, 0.3);
+          phase = 1;
+        } else if (phase === 1) {
+          step.innerText = 'Segure o Perfume...';
+          circle.innerText = '🪻';
+          phase = 2;
+        } else {
+          step.innerText = 'Sopre a Velinha... (Solte o ar)';
+          circle.innerText = '🌙';
+          circle.style.transform = 'scale(0.8)';
+          playTone(349, 0.3);
+          phase = 0;
+        }
+      }
+
+      cycle();
+      clearInterval(breathInterval);
+      breathInterval = setInterval(cycle, 4000);
+    }
+
+    function openStoriesModal() {
+      document.getElementById('storiesModal').classList.add('open');
+      playTone(523, 0.4);
+    }
+
+    // ==========================================
+    // 8. PARENTS PANEL & SCREEN TIME LOCK
+    // ==========================================
+    function openParentsModal() {
+      document.getElementById('inputPin').value = '';
+      document.getElementById('pinGate').style.display = 'block';
+      document.getElementById('parentsDashboard').style.display = 'none';
+      document.getElementById('parentsModal').classList.add('open');
+    }
+
+    function verifyPin() {
+      const v = document.getElementById('inputPin').value;
+      if (v === parentPin) {
+        document.getElementById('pinGate').style.display = 'none';
+        document.getElementById('parentsDashboard').style.display = 'block';
+        playSparkle();
+      } else {
+        alert('PIN incorreto. Senha padrão inicial: 1234');
+        document.getElementById('inputPin').value = '';
+      }
+    }
+
+    function setLimit(seconds) {
+      if (seconds > 0) {
+        screenTime.limit = seconds;
+        screenTime.remaining = seconds;
+        screenTime.active = true;
+        showToast('Tempo de tela configurado com sucesso!');
+      } else {
+        screenTime.active = false;
+        showToast('Tempo de tela desativado.');
+      }
+      closeModal('parentsModal');
+      updateUI();
+    }
+
+    function lockScreenNow() {
+      closeModal('parentsModal');
+      document.getElementById('sleepLockScreen').classList.add('active');
+    }
+
+    function unlockFromSleep() {
+      const p = prompt('Digite o PIN dos pais para liberar a tela:');
+      if (p === parentPin) {
+        document.getElementById('sleepLockScreen').classList.remove('active');
+        screenTime.remaining = screenTime.limit;
+        showToast('Tela liberada pelos pais!');
+      } else if (p !== null) {
+        alert('PIN incorreto!');
+      }
+    }
+
+    function addNewParentTask() {
+      const inp = document.getElementById('newTodoInput');
+      if (inp.value.trim()) {
+        tasks.push({ id: Date.now(), text: inp.value.trim(), done: false, reward: 15 });
+        inp.value = '';
+        showToast('Nova tarefa adicionada com sucesso!');
+        saveGame();
+      }
+    }
+
+    function changePin() {
+      const inp = document.getElementById('newPinInput').value;
+      if (inp.length === 4 && /^\d+$/.test(inp)) {
+        parentPin = inp;
+        showToast('Novo PIN configurado com sucesso!');
+        saveGame();
+      } else {
+        alert('O PIN deve conter exatamente 4 números.');
+      }
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+      if (id === 'breathingModal') {
+        clearInterval(breathInterval);
+      }
+    }
+
+    // ==========================================
+    // 9. GAME TICK LOOP (1s TICK)
+    // ==========================================
+    setInterval(() => {
+      // Screen time decrement
+      if (screenTime.active && screenTime.remaining > 0) {
+        screenTime.remaining--;
+        if (screenTime.remaining <= 0) {
+          document.getElementById('sleepLockScreen').classList.add('active');
+        }
+      }
+
+      // Stats natural changes
+      if (isSleeping) {
+        stats.energy = Math.min(100, stats.energy + 0.4);
+        stats.calm = Math.min(100, stats.calm + 0.1);
+      } else {
+        stats.energy = Math.max(5, stats.energy - 0.04);
+        stats.happy = Math.max(5, stats.happy - 0.05);
+        stats.calm = Math.max(5, stats.calm - 0.04);
+      }
+
+      updateUI();
+    }, 1000);
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSavedGame();
+      updateUI();
+    });
+  </script>
+</body>
+</html>
