@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Amigo de Folha — O Guardião do Sono</title>
+  <meta name="description" content="Mascote virtual terapêutico infantil para rotina de sono e bem-estar, com ursinho de lavanda, cultivo botânico, tarefas diárias e controle de tempo de tela.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-lavender: #f3e8ff;
+      --bg-soft: #faf5ff;
+      --primary-purple: #7c3aed;
+      --dark-purple: #4c1d95;
+      --light-green: #a7f3d0;
+      --accent-yellow: #fef08a;
+      --text-dark: #1e1b4b;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    body {
+      font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(180deg, #f3e8ff 0%, #faf5ff 50%, #ecfdf5 100%);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background 1s ease;
+    }
+    body.night-mode {
+      background: linear-gradient(180deg, #130f24 0%, #1b1531 60%, #0d0a1a 100%);
+      color: #e9d5ff;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(124, 58, 237, 0.15);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    body.night-mode header {
+      background: rgba(27, 21, 49, 0.85);
+      border-bottom-color: rgba(147, 51, 234, 0.2);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Fredoka', cursive, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #581c87;
+    }
+    body.night-mode .brand {
+      color: #d8b4fe;
+    }
+    .header-stats {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: #f5f3ff;
+      border: 1px solid #ddd6fe;
+      color: #6d28d9;
+    }
+    .badge-amber {
+      background: #fffbeb;
+      border-color: #fde68a;
+      color: #b45309;
+    }
+    .btn-parents {
+      background: #581c87;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .btn-parents:hover {
+      background: #4c1d95;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 500px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 12px 16px;
+    }
+    .status-card {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(8px);
+      border-radius: 20px;
+      border: 1px solid rgba(192, 132, 252, 0.2);
+      padding: 12px 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.05);
+    }
+    body.night-mode .status-card {
+      background: rgba(46, 36, 77, 0.7);
+      border-color: rgba(147, 51, 234, 0.3);
+    }
+    .status-meter {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .status-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .meter-track {
+      width: 100%;
+      height: 7px;
+      background: #e9d5ff;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+    .meter-fill {
+      height: 100%;
+      border-radius: 9999px;
+      transition: width 0.3s ease;
+    }
+    .fill-energy { background: #6366f1; }
+    .fill-happy { background: #f43f5e; }
+    .fill-calm { background: #a855f7; }
+    .nav-tabs {
+      display: flex;
+      background: rgba(255, 255, 255, 0.6);
+      padding: 4px;
+      border-radius: 16px;
+      border: 1px solid rgba(192, 132, 252, 0.3);
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    body.night-mode .nav-tabs {
+      background: rgba(46, 36, 77, 0.6);
+    }
+    .tab-btn {
+      padding: 8px 18px;
+      border-radius: 12px;
+      border: none;
+      background: transparent;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      color: #6b21a8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    body.night-mode .tab-btn {
+      color: #d8b4fe;
+    }
+    .tab-btn.active {
+      background: #7c3aed;
+      color: white;
+      box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
+    }
+    .tab-btn.active-green {
+      background: #059669;
+      color: white;
+      box-shadow: 0 4px 10px rgba(5, 150, 105, 0.3);
+    }
+    .mascot-container {
+      width: 260px;
+      height: 260px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      cursor: pointer;
+      margin: 6px 0;
+    }
+    @keyframes gentleFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes breatheLoop {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+    .float-anim {
+      animation: gentleFloat 4s ease-in-out infinite;
+    }
+    .breathe-anim {
+      animation: breatheLoop 5s ease-in-out infinite;
+    }
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      width: 100%;
+      margin-top: 14px;
+    }
+    .action-btn {
+      background: white;
+      border: 1px solid #e9d5ff;
+      border-radius: 16px;
+      padding: 10px 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #4c1d95;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(124, 58, 237, 0.05);
+      transition: all 0.2s;
+    }
+    .action-btn:active {
+      transform: scale(0.96);
+    }
+    .action-btn.btn-sleep {
+      background: #4f46e5;
+      color: white;
+      border-color: #4338ca;
+    }
+    .action-btn.btn-wake {
+      background: #f59e0b;
+      color: #78350f;
+      border-color: #d97706;
+    }
+    .action-btn.btn-tasks {
+      background: #7c3aed;
+      color: white;
+      border-color: #6d28d9;
+    }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 12, 29, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+    .modal-card {
+      background: white;
+      width: 100%;
+      max-width: 420px;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      overflow: hidden;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-header {
+      background: linear-gradient(135deg, #6d28d9, #4c1d95);
+      color: white;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-body {
+      padding: 18px;
+      overflow-y: auto;
+    }
+    .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border: 1px solid #e9d5ff;
+      border-radius: 14px;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+    .task-item.done {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+      text-decoration: line-through;
+      color: #6b7280;
+    }
+    .sleep-lock {
+      position: fixed;
+      inset: 0;
+      background: #0d0a1a;
+      z-index: 99;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      color: #e9d5ff;
+    }
+    .sleep-lock.active {
+      display: flex;
+    }
+    .toast {
+      position: fixed;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(76, 29, 149, 0.95);
+      color: white;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      z-index: 60;
+      display: none;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <div id="toast" class="toast">Notificação</div>
+
+  <header>
+    <div class="brand">
+      <span>🍃</span>
+      <span>Amigo de Folha</span>
+    </div>
+    <div class="header-stats">
+      <div class="badge badge-amber">
+        <span>🍃</span>
+        <span id="folhasCount">50</span>
+      </div>
+      <div class="badge" title="Sachês de Lavanda">
+        <span>🪻</span>
+        <span id="sachesCount">3</span>
+      </div>
+      <div id="screenTimeWidget" class="badge" style="display:none; font-family: monospace;">
+        <span>⏱️</span>
+        <span id="timerText">15:00</span>
+      </div>
+    </div>
+    <button class="btn-parents" onclick="openParentsModal()">
+      <span>🔒</span>
+      <span>Pais</span>
+    </button>
+  </header>
+
+  <main>
+    <!-- Status Card -->
+    <div class="status-card">
+      <div class="status-meter">
+        <div class="status-label"><span>🌙</span><span>Sono <b id="valEnergy">85%</b></span></div>
+        <div class="meter-track"><div id="barEnergy" class="meter-fill fill-energy" style="width: 85%;"></div></div>
+      </div>
+      <div class="status-meter">
+        <div class="status-label"><span>💖</span><span>Felicidade <b id="valHappy">90%</b></span></div>
+        <div class="meter-track"><div id="barHappy" class="meter-fill fill-happy" style="width: 90%;"></div></div>
+      </div>
+      <div class="status-meter">
+        <div class="status-label"><span>🪻</span><span>Aroma <b id="valCalm">80%</b></span></div>
+        <div class="meter-track"><div id="barCalm" class="meter-fill fill-calm" style="width: 80%;"></div></div>
+      </div>
+    </div>
+
+    <!-- Phase Tabs -->
+    <div class="nav-tabs">
+      <button id="tabTeddy" class="tab-btn active" onclick="switchTab('teddy')">
+        <span>🧸</span><span>O Ursinho</span>
+      </button>
+      <button id="tabGarden" class="tab-btn" onclick="switchTab('garden')">
+        <span>🪻</span><span>Jardim de Lavanda</span>
+        <span id="lockGardenIcon" style="font-size:0.65rem;">🔒</span>
+      </button>
+    </div>
+
+    <!-- Active Stage: Teddy Bear Mascot -->
+    <div id="stageTeddy" class="mascot-container float-anim" onclick="petTeddy()">
+      <svg viewBox="0 0 240 240" style="width:100%; height:100%;">
+        <radialGradient id="tBody" cx="45%" cy="40%" r="60%">
+          <stop offset="0%" stop-color="#edd8b7" />
+          <stop offset="60%" stop-color="#dfbe91" />
+          <stop offset="100%" stop-color="#cca16e" />
+        </radialGradient>
+        <radialGradient id="tInner" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#fdf3e7" />
+          <stop offset="100%" stop-color="#f5ddc3" />
+        </radialGradient>
+        <!-- Ears -->
+        <circle cx="62" cy="62" r="28" fill="url(#tBody)" stroke="#9a7143" stroke-width="2" />
+        <circle cx="62" cy="62" r="16" fill="url(#tInner)" />
+        <circle cx="178" cy="62" r="28" fill="url(#tBody)" stroke="#9a7143" stroke-width="2" />
+        <circle cx="178" cy="62" r="16" fill="url(#tInner)" />
+        <!-- Body -->
+        <ellipse cx="120" cy="165" rx="64" ry="60" fill="url(#tBody)" stroke="#9a7143" stroke-width="2" />
+        <!-- Pouch (Aroma Pocket) -->
+        <path d="M 96 156 Q 120 162 144 156 L 142 188 Q 120 200 98 188 Z" fill="#c084fc" stroke="#7e22ce" stroke-width="2" stroke-dasharray="3 2" onclick="event.stopPropagation(); useSachet();" />
+        <text x="120" y="178" text-anchor="middle" font-size="10" fill="#4c1d95" font-weight="bold">🪻 SACHÊ</text>
+        <!-- Head -->
+        <circle cx="120" cy="105" r="52" fill="url(#tBody)" stroke="#9a7143" stroke-width="2" />
+        <ellipse cx="88" cy="116" rx="8" ry="5" fill="#fca5a5" opacity="0.6" />
+        <ellipse cx="152" cy="116" rx="8" ry="5" fill="#fca5a5" opacity="0.6" />
+        <ellipse cx="120" cy="118" rx="20" ry="15" fill="url(#tInner)" />
+        <path d="M 115 112 Q 120 108 125 112 Q 120 118 115 112 Z" fill="#573619" />
+        <!-- Eyes -->
+        <g id="teddyEyes">
+          <circle cx="98" cy="100" r="7" fill="#3b2413" />
+          <circle cx="96" cy="98" r="2.5" fill="#fff" />
+          <circle cx="142" cy="100" r="7" fill="#3b2413" />
+          <circle cx="140" cy="98" r="2.5" fill="#fff" />
+        </g>
+        <path id="teddyMouth" d="M 115 122 Q 120 128 125 122" stroke="#573619" stroke-width="2" fill="none" stroke-linecap="round" />
+        <!-- Nightcap & Blanket for sleeping -->
+        <g id="sleepGear" style="display:none;">
+          <path d="M 85 70 Q 120 38 160 62 Q 170 30 185 36 Q 165 20 120 28 Q 80 42 85 70 Z" fill="#6366f1" />
+          <circle cx="188" cy="38" r="7" fill="#fde047" />
+          <path d="M 50 178 Q 120 165 190 178 L 194 225 Q 120 236 46 225 Z" fill="#6ee7b7" stroke="#059669" stroke-width="2" />
+        </g>
+      </svg>
+    </div>
+
+    <!-- Active Stage: Lavender Garden (Initially hidden or locked) -->
+    <div id="stageGarden" style="display:none; text-align:center; width:100%;">
+      <div id="gardenLockedMsg" style="padding: 24px; background: rgba(255,255,255,0.7); border-radius: 20px;">
+        <span style="font-size: 3rem;">🌱🔒</span>
+        <h3 style="margin: 8px 0; font-family: 'Fredoka', cursive;">Jardim Bloqueado</h3>
+        <p style="font-size: 0.8rem; color: #6b7280;">Alcance o Nível 2 cuidando do Ursinho para cultivar seu vasinho de lavanda!</p>
+      </div>
+
+      <div id="gardenActiveView" style="display:none;">
+        <svg viewBox="0 0 200 200" style="width:200px; height:200px; margin: 0 auto;">
+          <linearGradient id="pGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#fdba74" />
+            <stop offset="100%" stop-color="#ea580c" />
+          </linearGradient>
+          <!-- Plant stages -->
+          <g id="plantGraphics">
+            <!-- Stage: Sprout -->
+            <path id="sproutG" d="M 100 130 Q 98 115 100 100 Q 90 95 92 88 Q 100 92 100 100 Q 110 95 108 88 Q 100 92 100 100" stroke="#22c55e" stroke-width="3" fill="#4ade80" />
+            <!-- Stage: Flower -->
+            <g id="flowerG" style="display:none;">
+              <path d="M 100 130 L 100 50" stroke="#16a34a" stroke-width="3" />
+              <circle cx="100" cy="45" r="5" fill="#c084fc" />
+              <circle cx="95" cy="40" r="4.5" fill="#a855f7" />
+              <circle cx="105" cy="40" r="4.5" fill="#a855f7" />
+              <circle cx="100" cy="32" r="4" fill="#c084fc" />
+              <circle cx="100" cy="25" r="3.5" fill="#f3e8ff" />
+            </g>
+          </g>
+          <!-- Clay Pot -->
+          <ellipse cx="100" cy="130" rx="45" ry="12" fill="#582f0e" />
+          <path d="M 58 130 Q 100 136 142 130 L 128 178 Q 100 184 72 178 Z" fill="url(#pGrad)" stroke="#c2410c" stroke-width="1.5" />
+        </svg>
+
+        <div style="display: flex; gap: 8px; justify-content: center; margin-top: 10px;">
+          <button class="action-btn" onclick="waterPlant()">
+            <span style="font-size: 1.2rem;">🚿</span><span>Regar</span>
+          </button>
+          <button class="action-btn" onclick="giveSun()">
+            <span style="font-size: 1.2rem;">☀️</span><span>Luz Solar</span>
+          </button>
+          <button id="btnHarvest" class="action-btn" style="background:#7c3aed; color:white; display:none;" onclick="harvestLavender()">
+            <span style="font-size: 1.2rem;">🪻</span><span>Colher Flores!</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div id="actionsTeddy" class="actions-grid">
+      <button class="action-btn" onclick="petTeddy()">
+        <span style="font-size: 1.2rem;">💖</span><span>Carinho</span>
+      </button>
+      <button class="action-btn" onclick="useSachet()">
+        <span style="font-size: 1.2rem;">🪻</span><span>Usar Sachê</span>
+      </button>
+      <button id="btnSleepToggle" class="action-btn btn-sleep" onclick="toggleSleep()">
+        <span id="sleepIcon" style="font-size: 1.2rem;">🌙</span><span id="sleepText">Nanar</span>
+      </button>
+      <button class="action-btn" onclick="openBreathingModal()">
+        <span style="font-size: 1.2rem;">🍃</span><span>Respiração</span>
+      </button>
+      <button class="action-btn" onclick="openStoriesModal()">
+        <span style="font-size: 1.2rem;">📖</span><span>Historinha</span>
+      </button>
+      <button class="action-btn btn-tasks" onclick="openTasksModal()">
+        <span style="font-size: 1.2rem;">📋</span><span>Tarefas</span>
+      </button>
+    </div>
+  </main>
+
+  <!-- MODAL: Minhas Tarefas -->
+  <div id="tasksModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-family: 'Fredoka', cursive;">📋 Minhas Tarefas do Soninho</h3>
+        <button style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;" onclick="closeModal('tasksModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="tasksContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Respiração da Folhinha -->
+  <div id="breathingModal" class="modal-overlay">
+    <div class="modal-card" style="background: #1e1b4b; color: white; text-align: center;">
+      <div class="modal-header" style="background: #312e81;">
+        <h3>🍃 Respiração da Folhinha (4-4-4)</h3>
+        <button style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;" onclick="closeModal('breathingModal')">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 24px;">
+        <p id="breathStep" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 12px; color: #c084fc;">Cheire a Florzinha...</p>
+        <div id="breathCircle" style="width: 120px; height: 120px; border-radius: 50%; background: #7c3aed; margin: 16px auto; display:flex; align-items:center; justify-content:center; font-size: 2rem; transition: transform 4s ease-in-out;">🌸</div>
+        <p style="font-size: 0.8rem; color: #c7d2fe;">Inspire a calma, segure o perfume e solte o soninho bem devagar.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Historinhas -->
+  <div id="storiesModal" class="modal-overlay">
+    <div class="modal-card" style="background: #1e1b4b; color: #e0e7ff;">
+      <div class="modal-header" style="background: #2e1065;">
+        <h3>📖 Historinha de Ninar</h3>
+        <button style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;" onclick="closeModal('storiesModal')">✕</button>
+      </div>
+      <div class="modal-body" style="line-height: 1.6; font-size: 0.9rem;">
+        <h4 style="color:#fde047; margin-bottom: 8px;">A Folhinha que Aprendeu a Sonhar 🍃</h4>
+        <p>No alto da grande árvore de lavandas, vivia uma folhinha muito amiga. Quando o céu escureceu com estrelinhas cintilantes, a coruja sábia pousou e disse: "Respire o ar perfumado, feche os olhinhos e sonhe com carinho." A folhinha se enrolou quentinha e dormiu em paz. Boa noite, amiguinho!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Área dos Pais -->
+  <div id="parentsModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>🔒 Área dos Pais & Responsáveis</h3>
+        <button style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;" onclick="closeModal('parentsModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="pinGate">
+          <p style="font-size: 0.85rem; margin-bottom: 8px; color:#4b5563;">Digite o PIN de 4 dígitos (padrão: <b>1234</b>):</p>
+          <div style="display:flex; gap: 8px;">
+            <input id="inputPin" type="password" maxlength="4" style="width: 100px; font-size: 1.2rem; text-align: center; border: 1px solid #c084fc; border-radius: 8px; padding: 4px;" placeholder="••••">
+            <button class="btn-parents" onclick="verifyPin()">Entrar</button>
+          </div>
+        </div>
+
+        <div id="parentsDashboard" style="display:none;">
+          <h4 style="margin-bottom: 6px; font-size: 0.85rem; color:#4c1d95;">⏱️ Limite de Tempo de Tela:</h4>
+          <div style="display:flex; gap: 6px; margin-bottom: 12px;">
+            <button class="badge" onclick="setLimit(30)">30s (teste)</button>
+            <button class="badge" onclick="setLimit(15 * 60)">15 min</button>
+            <button class="badge" onclick="setLimit(30 * 60)">30 min</button>
+            <button class="badge" onclick="setLimit(0)">Desativar</button>
+          </div>
+          <button class="action-btn" style="background:#ef4444; color:white; width:100%; margin-bottom:12px;" onclick="lockScreenNow()">
+            🌙 Bloquear Tela Agora para Dormir
+          </button>
+          <hr style="margin: 12px 0; border: none; border-top: 1px solid #e5e7eb;">
+          <h4 style="margin-bottom: 6px; font-size: 0.85rem; color:#4c1d95;">Adicionar Nova Tarefa:</h4>
+          <div style="display:flex; gap: 6px;">
+            <input id="newTodoInput" type="text" placeholder="Ex.: Escovar dentes" style="flex:1; border: 1px solid #ddd; border-radius: 8px; padding: 6px; font-size: 0.8rem;">
+            <button class="btn-parents" onclick="addNewParentTask()">+ Adicionar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULLSCREEN SLEEP LOCK -->
+  <div id="sleepLockScreen" class="sleep-lock">
+    <span style="font-size: 4rem; margin-bottom: 12px;">🌙💤</span>
+    <h1 style="font-family: 'Fredoka', cursive; font-size: 1.8rem; margin-bottom: 8px;">Hora de Descansar!</h1>
+    <p style="font-size: 1rem; color: #c4b5fd; max-width: 320px; margin-bottom: 24px;">"O Amigo de Folha também precisa descansar! Hora de desligar a tela e dormir bem."</p>
+    <button style="background: transparent; color: #a78bfa; border: 1px solid #4c1d95; padding: 6px 14px; border-radius: 9999px; font-size: 0.75rem; cursor:pointer;" onclick="unlockFromSleep()">Desbloquear (Pais)</button>
+  </div>
+
+  <script>
+    // State
+    let stats = { energy: 85, happy: 90, calm: 80 };
+    let inventory = { folhas: 50, saches: 3, xp: 0, level: 1 };
+    let plant = { unlocked: false, moisture: 60, sun: 60, progress: 15 };
+    let isSleeping = false;
+    let screenTime = { limit: 0, remaining: 0, active: false };
+    let parentPin = '1234';
+
+    let tasks = [
+      { id: 1, text: 'Escovar os dentinhos 🦷', done: false, reward: 15 },
+      { id: 2, text: 'Guardar os brinquedos 🧸', done: false, reward: 20 },
+      { id: 3, text: 'Colocar o pijama quentinho 👕', done: false, reward: 10 },
+      { id: 4, text: 'Tomar banho morno 🛁', done: false, reward: 25 },
+      { id: 5, text: 'Ouvir historinha de dormir 📖', done: false, reward: 15 }
+    ];
+
+    // Web Audio Synthesizer
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(freq, dur) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + dur);
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 2500);
+    }
+
+    function updateUI() {
+      document.getElementById('valEnergy').innerText = Math.round(stats.energy) + '%';
+      document.getElementById('valHappy').innerText = Math.round(stats.happy) + '%';
+      document.getElementById('valCalm').innerText = Math.round(stats.calm) + '%';
+      document.getElementById('barEnergy').style.width = stats.energy + '%';
+      document.getElementById('barHappy').style.width = stats.happy + '%';
+      document.getElementById('barCalm').style.width = stats.calm + '%';
+      document.getElementById('folhasCount').innerText = inventory.folhas;
+      document.getElementById('sachesCount').innerText = inventory.saches;
+
+      if (inventory.level >= 2) {
+        document.getElementById('lockGardenIcon').style.display = 'none';
+        document.getElementById('gardenLockedMsg').style.display = 'none';
+        document.getElementById('gardenActiveView').style.display = 'block';
+      }
+
+      if (screenTime.active && screenTime.remaining > 0) {
+        document.getElementById('screenTimeWidget').style.display = 'inline-flex';
+        const m = Math.floor(screenTime.remaining / 60);
+        const s = screenTime.remaining % 60;
+        document.getElementById('timerText').innerText = m + ':' + (s < 10 ? '0' : '') + s;
+      } else {
+        document.getElementById('screenTimeWidget').style.display = 'none';
+      }
+    }
+
+    function petTeddy() {
+      stats.happy = Math.min(100, stats.happy + 8);
+      stats.calm = Math.min(100, stats.calm + 3);
+      inventory.xp += 5;
+      playBeep(440, 0.2);
+      setTimeout(() => playBeep(554, 0.25), 100);
+      checkLevelUp();
+      updateUI();
+      showToast('💖 Ursinho feliz com seu carinho!');
+    }
+
+    function useSachet() {
+      if (inventory.saches > 0) {
+        inventory.saches--;
+        stats.calm = 100;
+        inventory.xp += 15;
+        playBeep(659, 0.5);
+        showToast('🪻 Sachê no bolsinho! Cheirinho de lavanda relaxante.');
+        checkLevelUp();
+        updateUI();
+      } else {
+        showToast('Sem sachês! Cultive lavandas no jardim para renovar.');
+      }
+    }
+
+    function toggleSleep() {
+      isSleeping = !isSleeping;
+      document.body.classList.toggle('night-mode', isSleeping);
+      document.getElementById('sleepGear').style.display = isSleeping ? 'block' : 'none';
+      document.getElementById('sleepText').innerText = isSleeping ? 'Acordar' : 'Nanar';
+      document.getElementById('sleepIcon').innerText = isSleeping ? '☀️' : '🌙';
+      playBeep(392, 0.4);
+      showToast(isSleeping ? '🌙 Ursinho nanando em paz...' : '☀️ Bom dia! Ursinho acordou descansado.');
+    }
+
+    function switchTab(tab) {
+      if (tab === 'teddy') {
+        document.getElementById('tabTeddy').classList.add('active');
+        document.getElementById('tabGarden').classList.remove('active-green');
+        document.getElementById('stageTeddy').style.display = 'flex';
+        document.getElementById('actionsTeddy').style.display = 'grid';
+        document.getElementById('stageGarden').style.display = 'none';
+      } else {
+        document.getElementById('tabTeddy').classList.remove('active');
+        document.getElementById('tabGarden').classList.add('active-green');
+        document.getElementById('stageTeddy').style.display = 'none';
+        document.getElementById('actionsTeddy').style.display = 'none';
+        document.getElementById('stageGarden').style.display = 'block';
+      }
+    }
+
+    function waterPlant() {
+      plant.moisture = Math.min(100, plant.moisture + 25);
+      plant.progress = Math.min(100, plant.progress + 15);
+      playBeep(700, 0.15);
+      if (plant.progress >= 90) {
+        document.getElementById('flowerG').style.display = 'block';
+        document.getElementById('btnHarvest').style.display = 'flex';
+      }
+      showToast('💧 Lavanda regada!');
+      updateUI();
+    }
+
+    function giveSun() {
+      plant.sun = Math.min(100, plant.sun + 20);
+      playBeep(520, 0.2);
+      showToast('☀️ Solzinho gostoso na plantinha!');
+    }
+
+    function harvestLavender() {
+      inventory.saches += 2;
+      inventory.folhas += 40;
+      inventory.xp += 30;
+      plant.progress = 10;
+      document.getElementById('flowerG').style.display = 'none';
+      document.getElementById('btnHarvest').style.display = 'none';
+      playBeep(880, 0.6);
+      showToast('🎉 Colheita realizada! +2 Sachês e +40 Folhinhas!');
+      checkLevelUp();
+      updateUI();
+    }
+
+    function checkLevelUp() {
+      if (inventory.xp >= inventory.level * 60) {
+        inventory.level++;
+        inventory.folhas += 20;
+        playBeep(523, 0.2);
+        setTimeout(() => playBeep(659, 0.2), 100);
+        setTimeout(() => playBeep(784, 0.4), 200);
+        showToast('🌟 Subiu para o Nível ' + inventory.level + '!');
+      }
+    }
+
+    // Modal Handlers
+    function openTasksModal() {
+      renderTasks();
+      document.getElementById('tasksModal').classList.add('open');
+    }
+    function renderTasks() {
+      const c = document.getElementById('tasksContainer');
+      c.innerHTML = tasks.map(t => `
+        <div class="task-item ${t.done ? 'done' : ''}" onclick="toggleTask(${t.id})">
+          <span>${t.text}</span>
+          <span style="font-weight:bold; color:#7c3aed;">+${t.reward} 🍃</span>
+        </div>
+      `).join('');
+    }
+    function toggleTask(id) {
+      const t = tasks.find(x => x.id === id);
+      if (t) {
+        t.done = !t.done;
+        if (t.done) {
+          inventory.folhas += t.reward;
+          inventory.xp += 20;
+          playBeep(659, 0.3);
+          checkLevelUp();
+        }
+        renderTasks();
+        updateUI();
+      }
+    }
+    function openBreathingModal() {
+      document.getElementById('breathingModal').classList.add('open');
+      const circle = document.getElementById('breathCircle');
+      circle.style.transform = 'scale(1.3)';
+      setTimeout(() => { circle.style.transform = 'scale(0.8)'; }, 4000);
+    }
+    function openStoriesModal() {
+      document.getElementById('storiesModal').classList.add('open');
+    }
+    function openParentsModal() {
+      document.getElementById('inputPin').value = '';
+      document.getElementById('pinGate').style.display = 'block';
+      document.getElementById('parentsDashboard').style.display = 'none';
+      document.getElementById('parentsModal').classList.add('open');
+    }
+    function verifyPin() {
+      const v = document.getElementById('inputPin').value;
+      if (v === parentPin) {
+        document.getElementById('pinGate').style.display = 'none';
+        document.getElementById('parentsDashboard').style.display = 'block';
+      } else {
+        alert('PIN incorreto. Padrão inicial: 1234');
+      }
+    }
+    function setLimit(seconds) {
+      if (seconds > 0) {
+        screenTime.limit = seconds;
+        screenTime.remaining = seconds;
+        screenTime.active = true;
+        showToast('Tempo de tela configurado!');
+      } else {
+        screenTime.active = false;
+        showToast('Tempo de tela desativado.');
+      }
+      closeModal('parentsModal');
+      updateUI();
+    }
+    function lockScreenNow() {
+      closeModal('parentsModal');
+      document.getElementById('sleepLockScreen').classList.add('active');
+    }
+    function unlockFromSleep() {
+      const p = prompt('Digite o PIN dos pais para liberar:');
+      if (p === parentPin) {
+        document.getElementById('sleepLockScreen').classList.remove('active');
+        screenTime.remaining = screenTime.limit;
+      }
+    }
+    function addNewParentTask() {
+      const inp = document.getElementById('newTodoInput');
+      if (inp.value.trim()) {
+        tasks.push({ id: Date.now(), text: inp.value.trim(), done: false, reward: 15 });
+        inp.value = '';
+        showToast('Tarefa adicionada com sucesso!');
+      }
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    // Game loop tick (every 1s)
+    setInterval(() => {
+      if (isSleeping) {
+        stats.energy = Math.min(100, stats.energy + 0.4);
+      } else {
+        stats.energy = Math.max(5, stats.energy - 0.05);
+        stats.happy = Math.max(5, stats.happy - 0.06);
+        stats.calm = Math.max(5, stats.calm - 0.05);
+      }
+
+      if (screenTime.active && screenTime.remaining > 0) {
+        screenTime.remaining--;
+        if (screenTime.remaining <= 0) {
+          document.getElementById('sleepLockScreen').classList.add('active');
+        }
+      }
+
+      updateUI();
+    }, 1000);
+
+    updateUI();
+  </script>
+</body>
+</html>

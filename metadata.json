@@ -1,0 +1,6 @@
+{
+  "name": "Amigo de Folha — O Guardião do Sono",
+  "description": "Mascote virtual terapêutico infantil para rotina de sono e bem-estar, com ursinho de lavanda, cultivo botânico, gerenciador de tarefas e controle parental de tempo de tela.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
